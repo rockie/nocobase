@@ -6,7 +6,6 @@
   "types": "./lib/index.d.ts",
   "license": "AGPL-3.0",
   "dependencies": {
-    "node-sql-parser": "^4.18.0",
     "@nocobase/logger": "workspace:*",
     "@nocobase/utils": "workspace:*",
     "async-mutex": "^0.3.2",
@@ -24,6 +23,7 @@
     "mathjs": "^10.6.1",
     "nanoid": "^3.3.6",
     "node-fetch": "^2.6.7",
+    "node-sql-parser": "^5.1.0",
     "qs": "^6.11.2",
     "safe-json-stringify": "^1.2.0",
     "semver": "^7.3.7",
