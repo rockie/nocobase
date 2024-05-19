@@ -2,16 +2,16 @@
   "name": "@nocobase/plugin-mock-collections",
   "displayName": "mock-collections",
   "description": "mock-collections",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "main": "./dist/server/index.js",
   "license": "AGPL-3.0",
   "peerDependencies": {
-    "@nocobase/client": "1.x",
-    "@nocobase/database": "1.x",
-    "@nocobase/plugin-error-handler": "1.x",
-    "@nocobase/server": "1.x",
-    "@nocobase/test": "1.x",
-    "@nocobase/utils": "1.x"
+    "@nocobase/client": "workspace:*",
+    "@nocobase/database": "workspace:*",
+    "@nocobase/plugin-error-handler": "workspace:*",
+    "@nocobase/server": "workspace:*",
+    "@nocobase/test": "workspace:*",
+    "@nocobase/utils": "workspace:*"
   },
   "devDependencies": {
     "pg": "^8.11.3"

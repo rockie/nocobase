@@ -130,6 +130,14 @@ const external = [
   'ahooks',
   'lodash',
   'china-division',
+
+  // missing
+  "file-saver",
+  "react-to-print",
+  "classnames",
+  "@ctrl/tinycolor",
+  "react-beautiful-dnd", 
+  "deepmerge",
 ];
 const pluginPrefix = (
   process.env.PLUGIN_PACKAGE_PREFIX || '@nocobase/plugin-,@nocobase/preset-,@nocobase/plugin-pro-'
@@ -318,6 +326,15 @@ export async function buildPluginClient(cwd: string, userConfig: UserConfig, sou
 
   const entry = fg.globSync('src/client/index.{ts,tsx,js,jsx}', { absolute: true, cwd });
   const outputFileName = 'index.js';
+
+  // ugly hack for lodash
+  if (globals.lodash) {
+    globals["lodash/uniq"] = "lodash.uniq";
+    globals["lodash/pick"] = "lodash.pick";
+    globals["lodash/cloneDeep"] = "lodash.cloneDeep";
+    globals["lodash/omit"] = "lodash.omit";
+    globals["lodash/set"] = "lodash.set";
+  }
 
   await viteBuild(userConfig.modifyViteConfig({
     mode: process.env.NODE_ENV || 'production',

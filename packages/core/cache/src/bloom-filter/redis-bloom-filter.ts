@@ -21,7 +21,7 @@ export class RedisBloomFilter implements BloomFilter {
     this.cache = cache;
   }
 
-  getStore() {
+  getStore(): RedisStore {
     return this.cache.store.store as RedisStore;
   }
 

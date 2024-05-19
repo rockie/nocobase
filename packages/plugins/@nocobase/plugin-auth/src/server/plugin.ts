@@ -65,10 +65,10 @@ export class PluginAuthServer extends Plugin {
     });
     // Register actions
     Object.entries(authActions).forEach(
-      ([action, handler]) => this.app.resourcer.getResource('auth')?.addAction(action, handler),
+      ([action, handler]) => this.app.resourceManager.getResource('auth')?.addAction(action, handler),
     );
     Object.entries(authenticatorsActions).forEach(([action, handler]) =>
-      this.app.resourcer.registerAction(`authenticators:${action}`, handler),
+      this.app.resourceManager.registerAction(`authenticators:${action}`, handler),
     );
     // Set up ACL
     ['check', 'signIn', 'signUp'].forEach((action) => this.app.acl.allow('auth', action));

@@ -12,7 +12,9 @@ const commands = require('./commands');
 
 const cli = new Command();
 
-cli.version(require('../package.json').version);
+cli
+  .version(require('../package.json').version)
+  .option('--package-manager <package-manager>', 'package manager [pnpm|yarn]', 'pnpm');
 
 commands(cli);
 

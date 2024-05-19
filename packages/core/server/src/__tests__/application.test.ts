@@ -40,7 +40,7 @@ describe('application', () => {
       registerActions: false,
     });
 
-    app.resourcer.registerActionHandlers({
+    app.resourceManager.registerActionHandlers({
       list: async (ctx, next) => {
         ctx.body = [1, 2];
         await next();
@@ -62,7 +62,7 @@ describe('application', () => {
   });
 
   it('should request long json', async () => {
-    app.resourcer.define({
+    app.resourceManager.define({
       name: 'test',
       actions: {
         test: async (ctx, next) => {
@@ -78,7 +78,7 @@ describe('application', () => {
   });
 
   it('resourcer.define', async () => {
-    app.resourcer.define({
+    app.resourceManager.define({
       name: 'test',
     });
     const response = await agent.get('/api/test');
@@ -86,7 +86,7 @@ describe('application', () => {
   });
 
   it('resourcer.define', async () => {
-    app.resourcer.define({
+    app.resourceManager.define({
       type: 'hasMany',
       name: 'test.abc',
     });

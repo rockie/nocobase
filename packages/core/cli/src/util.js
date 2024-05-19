@@ -48,7 +48,7 @@ const isProd = () => {
   if (!existsSync(resolve(process.cwd(), file))) {
     console.log('For production environment, please build the code first.');
     console.log();
-    console.log(chalk.yellow('$ yarn build'));
+    console.log(chalk.yellow('$ pnpm build'));
     console.log();
     process.exit(1);
   }
@@ -60,7 +60,7 @@ exports.isProd = isProd;
 exports.nodeCheck = () => {
   if (!exports.hasTsNode()) {
     console.log('Please install all dependencies');
-    console.log(chalk.yellow('$ yarn install'));
+    console.log(chalk.yellow('$ pnpm install'));
     process.exit(1);
   }
 };
@@ -169,7 +169,7 @@ exports.updateJsonFile = async (target, fn) => {
 };
 
 exports.getVersion = async () => {
-  const { stdout } = await execa('npm', ['v', '@nocobase/app-server', 'versions']);
+  const { stdout } = await execa('npm', ['v', '@nocobase/server', 'versions']);
   const versions = new Function(`return (${stdout})`)();
   return versions[versions.length - 1];
 };

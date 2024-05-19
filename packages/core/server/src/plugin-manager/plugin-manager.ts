@@ -16,7 +16,7 @@ import fg from 'fast-glob';
 import fs from 'fs';
 import _ from 'lodash';
 import net from 'net';
-import { basename, dirname, join, resolve, sep } from 'path';
+import { dirname, basename, join, resolve, sep } from 'path';
 import Application from '../application';
 import { createAppProxy, tsxRerunning } from '../helper';
 import { Plugin } from '../plugin';
@@ -29,6 +29,7 @@ import {
   copyTempPackageToStorageAndLinkToNodeModules,
   downloadAndUnzipToTempDir,
   getNpmInfo,
+  getPluginBasePath,
   getPluginInfoByNpm,
   removeTmpDir,
   updatePluginByCompressedFileUrl,
@@ -93,7 +94,7 @@ export class PluginManager {
 
     this._repository = this.collection.repository as PluginManagerRepository;
     this._repository.setPluginManager(this);
-    this.app.resourcer.define(resourceOptions);
+    this.app.resourceManager.define(resourceOptions);
     this.app.acl.allow('pm', 'listEnabled', 'public');
     this.app.acl.registerSnippet({
       name: 'pm',
@@ -105,7 +106,7 @@ export class PluginManager {
       directory: resolve(__dirname, '../migrations'),
     });
 
-    this.app.resourcer.use(uploadMiddleware);
+    this.app.resourceManager.use(uploadMiddleware);
   }
 
   /**
@@ -120,19 +121,43 @@ export class PluginManager {
   /**
    * @internal
    */
-  static async getPackageJson(packageName: string) {
-    const file = await fs.promises.realpath(resolve(process.env.NODE_MODULES_PATH, packageName, 'package.json'));
-    const data = await fs.promises.readFile(file, { encoding: 'utf-8' });
+  static async getPackageJson(packageName: string, nodeModulePath = process.env.NODE_MODULES_PATH) {
+    const file = await fs.promises.realpath(resolve(nodeModulePath, packageName, 'package.json'));
+    return this.getPackageJsonByPath(file);
+  }
+
+  /**
+   * @internal
+   */
+  static async getPackageJsonByPath(packagePath) {
+    const data = await fs.promises.readFile(packagePath, { encoding: 'utf-8' });
     return JSON.parse(data);
   }
 
   /**
    * @internal
    */
-  static async getPackageName(name: string) {
+  static async getPackageNameAndPath(name: string, nodeModulePath: string = process.env.NODE_MODULES_PATH) {
     const prefixes = this.getPluginPkgPrefix();
+
     for (const prefix of prefixes) {
-      const pkg = resolve(process.env.NODE_MODULES_PATH, `${prefix}${name}`, 'package.json');
+      const pkg = resolve(nodeModulePath, `${prefix}${name}`, 'package.json');
+      const exists = await fsExists(pkg);
+      if (exists) {
+        return [`${prefix}${name}`, pkg];
+      }
+    }
+    throw new Error(`${name} plugin does not exist`);
+  }
+
+  /**
+   * @internal
+   */
+  static async getPackageName(name: string, nodeModulePath: string = process.env.NODE_MODULES_PATH) {
+    const prefixes = this.getPluginPkgPrefix();
+
+    for (const prefix of prefixes) {
+      const pkg = resolve(nodeModulePath, `${prefix}${name}`, 'package.json');
       const exists = await fsExists(pkg);
       if (exists) {
         return `${prefix}${name}`;
@@ -166,7 +191,7 @@ export class PluginManager {
           console.log(`Try to find ${packageName}`);
           await execa('npm', ['v', packageName, 'versions']);
           console.log(`${packageName} downloading`);
-          await execa('yarn', ['add', packageName, '-W']);
+          await execa('pnpm', ['add', packageName, '-w']);
           console.log(`${packageName} downloaded`);
           return packageName;
         } catch (error) {
@@ -181,7 +206,6 @@ export class PluginManager {
    * @internal
    */
   static clearCache(packageName: string) {
-    return;
     const packageNamePath = packageName.replace('/', sep);
     Object.keys(require.cache).forEach((key) => {
       if (key.includes(packageNamePath)) {
@@ -193,10 +217,13 @@ export class PluginManager {
   /**
    * @internal
    */
-  static async resolvePlugin(pluginName: string | typeof Plugin, isUpgrade = false, isPkg = false) {
+  static async resolvePlugin(pluginName: string | typeof Plugin, isUpgrade = false, isPkg = false, packagePath: string) {
     if (typeof pluginName === 'string') {
       const packageName = isPkg ? pluginName : await this.getPackageName(pluginName);
       this.clearCache(packageName);
+      if (packagePath) {
+        return await importModule(dirname(packagePath));
+      }
       return await importModule(packageName);
     } else {
       return pluginName;
@@ -300,7 +327,7 @@ export class PluginManager {
       await this.app.db.auth({ retry: 1 });
       const installed = await this.app.isInstalled();
       if (!installed) {
-        console.log(`yarn pm add ${pluginName}`);
+        console.log(`pnpm pm add ${pluginName}`);
         return;
       }
     } catch (error) {
@@ -340,8 +367,12 @@ export class PluginManager {
         const packageName = await PluginManager.getPackageName(options.name);
         options['packageName'] = packageName;
       }
+      if (options.packagePath ) {
+        const packageJson = await PluginManager.getPackageJsonByPath(options.packagePath);
+        options["packageJson"] = packageJson;
+        options["version"] = packageJson.version;
 
-      if (options.packageName) {
+      } else if (options.packageName) {
         const packageJson = await PluginManager.getPackageJson(options.packageName);
         options['packageJson'] = packageJson;
         options['version'] = packageJson.version;
@@ -357,7 +388,7 @@ export class PluginManager {
     });
     let P: any;
     try {
-      P = await PluginManager.resolvePlugin(options.packageName || plugin, isUpgrade, !!options.packageName);
+      P = await PluginManager.resolvePlugin(options.packageName || plugin, isUpgrade, !!options.packageName, options.packagePath);
     } catch (error) {
       this.app.log.warn('plugin not found', error);
       return;
@@ -395,7 +426,7 @@ export class PluginManager {
    * @internal
    */
   async loadCommands() {
-    this.app.log.debug('load commands');
+    this.app.log.info('load commands');
     const items = await this.repository.find({
       filter: {
         enabled: true,
@@ -404,21 +435,16 @@ export class PluginManager {
     const packageNames: string[] = items.map((item) => item.packageName);
     const source = [];
     for (const packageName of packageNames) {
-      const file = require.resolve(packageName);
-      const sourceDir = basename(dirname(file)) === 'src' ? 'src' : 'dist';
-      const directory = join(
-        packageName,
-        sourceDir,
-        'server/commands/*.' + (basename(dirname(file)) === 'src' ? 'ts' : 'js'),
-      );
+      const dirname = await getPluginBasePath(packageName);
+      const directory = join(dirname, 'server/commands/*.' + (basename(dirname) === 'src' ? 'ts' : 'js'));
+
       source.push(directory.replaceAll(sep, '/'));
     }
     for (const plugin of this.options.plugins || []) {
       if (typeof plugin === 'string') {
-        const packageName = await PluginManager.getPackageName(plugin);
-        const file = require.resolve(packageName);
-        const sourceDir = basename(dirname(file)) === 'src' ? 'src' : 'lib';
-        const directory = join(packageName, sourceDir, 'server/commands/*.' + (sourceDir === 'src' ? 'ts' : 'js'));
+        const { packageName } = await PluginManager.parseName(plugin);
+        const dirname = await getPluginBasePath(packageName);
+        const directory = join(dirname, 'server/commands/*.' + (basename(dirname) === 'src' ? 'ts' : 'js'));
         source.push(directory.replaceAll(sep, '/'));
       }
     }
@@ -693,7 +719,7 @@ export class PluginManager {
           }
         }),
       );
-      await execa('yarn', ['nocobase', 'postinstall']);
+      await execa('pnpm', ['nocobase', 'postinstall']);
     };
     if (options?.force) {
       await this.repository.destroy({
@@ -736,7 +762,7 @@ export class PluginManager {
     if (options?.removeDir) {
       await removeDir();
     }
-    await execa('yarn', ['nocobase', 'refresh'], {
+    await execa('pnpm', ['nocobase', 'refresh'], {
       env: process.env,
     });
   }
@@ -750,7 +776,7 @@ export class PluginManager {
         await this.addViaCLI(packageName, _.omit(options, 'name'), false);
       }
       await this.app.emitStartedEvent();
-      await execa('yarn', ['nocobase', 'postinstall']);
+      await execa('pnpm', ['nocobase', 'postinstall']);
       return;
     }
     if (isURL(urlOrName)) {
@@ -792,7 +818,7 @@ export class PluginManager {
     }
     if (emitStartedEvent) {
       await this.app.emitStartedEvent();
-      await execa('yarn', ['nocobase', 'postinstall']);
+      await execa('pnpm', ['nocobase', 'postinstall']);
     }
   }
 
@@ -883,7 +909,7 @@ export class PluginManager {
         this.app.log.debug('app upgrading');
         await this.app.runCommand('upgrade');
         await tsxRerunning();
-        await execa('yarn', ['nocobase', 'pm2-restart'], {
+        await execa('pnpm', ['nocobase', 'pm2-restart'], {
           env: process.env,
         });
         return;
@@ -892,7 +918,7 @@ export class PluginManager {
       await fs.promises.writeFile(file, '', 'utf-8');
       // await this.app.upgrade();
       await tsxRerunning();
-      await execa('yarn', ['nocobase', 'pm2-restart'], {
+      await execa('pnpm', ['nocobase', 'pm2-restart'], {
         env: process.env,
       });
     };
@@ -1146,6 +1172,7 @@ export class PluginManager {
     if (this['_initPresetPlugins']) {
       return;
     }
+
     for (const plugin of this.options.plugins) {
       const [p, opts = {}] = Array.isArray(plugin) ? plugin : [plugin];
       await this.add(p, { enabled: true, isPreset: true, ...opts });

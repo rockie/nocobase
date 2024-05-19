@@ -41,7 +41,7 @@ export class ChartsPlugin extends Plugin {
   async load() {
     await this.importCollections(resolve(__dirname, 'collections'));
 
-    this.app.resourcer.registerActionHandlers({
+    this.app.resourceManager.registerActionHandlers({
       'chartsQueries:getData': getData,
       'chartsQueries:listMetadata': listMetadata,
       'chartsQueries:validate': validate,

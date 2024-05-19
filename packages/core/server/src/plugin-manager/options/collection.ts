@@ -17,6 +17,7 @@ export default defineCollection({
   fields: [
     { type: 'string', name: 'name', unique: true },
     { type: 'string', name: 'packageName', unique: true },
+    { type: 'string', name: 'packagePath' },
     { type: 'string', name: 'version' },
     { type: 'boolean', name: 'enabled' },
     { type: 'boolean', name: 'installed' },

@@ -97,9 +97,9 @@ export default class PluginFileManagerServer extends Plugin {
     this.app.acl.allow('attachments', 'upload', 'loggedIn');
     this.app.acl.allow('attachments', 'create', 'loggedIn');
 
-    // this.app.resourcer.use(uploadMiddleware);
-    // this.app.resourcer.use(createAction);
-    // this.app.resourcer.registerActionHandler('upload', uploadAction);
+    // this.app.resourceManager.use(uploadMiddleware);
+    // this.app.resourceManager.use(createAction);
+    // this.app.resourceManager.registerActionHandler('upload', uploadAction);
 
     const defaultStorageName = getStorageConfig(this.storageType()).defaults().name;
 

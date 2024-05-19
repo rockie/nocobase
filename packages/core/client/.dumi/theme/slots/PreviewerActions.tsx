@@ -42,7 +42,7 @@ const packageJson = `
     "@vitejs/plugin-react": "^4.0.3",
     "less": "^4.2.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^5.2.0"
   }
 }
 `
@@ -93,13 +93,13 @@ const sandboxTask = `
   "setupTasks": [
     {
       "name": "Install Dependencies",
-      "command": "yarn install"
+      "command": "pnpm install"
     }
   ],
   "tasks": {
     "dev": {
       "name": "dev",
-      "command": "yarn dev",
+      "command": "pnpm dev",
       "runAtStart": true,
       "preview": {
         "port": 5173
@@ -107,12 +107,12 @@ const sandboxTask = `
     },
     "build": {
       "name": "build",
-      "command": "yarn build",
+      "command": "pnpm build",
       "runAtStart": false
     },
     "preview": {
       "name": "preview",
-      "command": "yarn preview",
+      "command": "pnpm preview",
       "runAtStart": false
     }
   }

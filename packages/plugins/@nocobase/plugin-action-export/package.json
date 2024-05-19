@@ -4,13 +4,13 @@
   "displayName.zh-CN": "操作：导出记录",
   "description": "Export filtered records to excel, you can configure which fields to export.",
   "description.zh-CN": "导出筛选后的记录到 Excel 中，可以配置导出哪些字段。",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "license": "AGPL-3.0",
   "main": "./dist/server/index.js",
   "homepage": "https://docs.nocobase.com/handbook/action-export",
   "homepage.zh-CN": "https://docs-cn.nocobase.com/handbook/action-export",
   "devDependencies": {
-    "@formily/antd-v5": "1.x",
+    "@formily/antd-v5": "*",
     "@formily/react": "2.x",
     "@formily/shared": "2.x",
     "@types/node-xlsx": "^0.15.1",
@@ -20,12 +20,12 @@
     "react-i18next": "^11.15.1"
   },
   "peerDependencies": {
-    "@nocobase/actions": "1.x",
-    "@nocobase/client": "1.x",
-    "@nocobase/database": "1.x",
-    "@nocobase/server": "1.x",
-    "@nocobase/test": "1.x",
-    "@nocobase/utils": "1.x"
+    "@nocobase/actions": "workspace:*",
+    "@nocobase/client": "workspace:*",
+    "@nocobase/database": "workspace:*",
+    "@nocobase/server": "workspace:*",
+    "@nocobase/test": "workspace:*",
+    "@nocobase/utils": "workspace:*"
   },
   "gitHead": "d0b4efe4be55f8c79a98a331d99d9f8cf99021a1",
   "keywords": [

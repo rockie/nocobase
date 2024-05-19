@@ -1,6 +1,6 @@
 {
   "name": "@nocobase/plugin-file-manager",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "displayName": "File manager",
   "displayName.zh-CN": "文件管理器",
   "description": "Provides files storage services with files collection template and attachment field.",
@@ -11,7 +11,7 @@
   "homepage.zh-CN": "https://docs-cn.nocobase.com/handbook/file-manager",
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.245.0",
-    "@formily/antd-v5": "1.x",
+    "@formily/antd-v5": "*",
     "@formily/core": "2.x",
     "@formily/react": "2.x",
     "@formily/shared": "2.x",
@@ -32,12 +32,12 @@
     "supertest": "^6.1.6"
   },
   "peerDependencies": {
-    "@nocobase/actions": "1.x",
-    "@nocobase/client": "1.x",
-    "@nocobase/database": "1.x",
-    "@nocobase/server": "1.x",
-    "@nocobase/test": "1.x",
-    "@nocobase/utils": "1.x"
+    "@nocobase/actions": "workspace:*",
+    "@nocobase/client": "workspace:*",
+    "@nocobase/database": "workspace:*",
+    "@nocobase/server": "workspace:*",
+    "@nocobase/test": "workspace:*",
+    "@nocobase/utils": "workspace:*"
   },
   "keywords": [
     "Collections",

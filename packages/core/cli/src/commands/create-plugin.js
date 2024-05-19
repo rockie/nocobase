@@ -27,6 +27,7 @@ module.exports = (cli) => {
         context: {
           name,
         },
+        packageManager: cli.opts().packageManager,
       });
       await generator.run();
     });

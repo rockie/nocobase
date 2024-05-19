@@ -16,7 +16,7 @@ export const getAutoDeletePluginsWarning = (plugins: string[]) => {
 export const getNotExistsEnabledPluginsError = (plugins: Map<string, string>, app: string) => {
   const pluginNames = Array.from(plugins.keys()).map((name) => plugins.get(name) || name);
   const appOption = app === 'main' ? '' : ` --app ${app}`;
-  const removeCmds = `yarn pm remove ${Array.from(plugins.keys()).join(' ')} --force${appOption}`;
+  const removeCmds = `pnpm pm remove ${Array.from(plugins.keys()).join(' ')} --force${appOption}`;
   const enErrMsg = `
 The following plugins you are currently using will become commercial plugins after the upgrade:
 ${pluginNames.join(', ')}

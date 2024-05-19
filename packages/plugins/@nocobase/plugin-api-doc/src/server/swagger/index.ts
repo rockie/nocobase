@@ -146,7 +146,7 @@ export class SwaggerManager {
       },
       servers: [
         {
-          url: (this.app.resourcer.options.prefix || '/').replace(/^[^/]/, '/$1'),
+          url: (this.app.resourceManager.options.prefix || '/').replace(/^[^/]/, '/$1'),
         },
       ],
     });
@@ -191,13 +191,13 @@ export class SwaggerManager {
 
   private generateCollectionBuiltInInterface() {
     const paths = {};
-    const IC = getInterfaceCollection(this.app.resourcer.options);
+    const IC = getInterfaceCollection(this.app.resourceManager.options);
     this.db.collections.forEach((collection) => {
       const { name } = collection;
       let actions;
 
-      if (this.app.resourcer.isDefined(name)) {
-        actions = this.app.resourcer.getResource(name).actions;
+      if (this.app.resourceManager.isDefined(name)) {
+        actions = this.app.resourceManager.getResource(name).actions;
       } else {
         actions = {
           has: () => true,

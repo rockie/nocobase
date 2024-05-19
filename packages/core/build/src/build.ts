@@ -26,7 +26,6 @@ import { buildPlugin } from './buildPlugin';
 import { buildDeclaration } from './buildDeclaration';
 import { PkgLog, getPkgLog, toUnixPath, getPackageJson, getUserConfig, UserConfig, writeToCache, readFromCache } from './utils';
 import { getPackages } from './utils/getPackages';
-import { Package } from '@lerna/package';
 import { tarPlugin } from './tarPlugin'
 import { buildEsm } from './buildEsm';
 import { addLicense } from './utils/addlicense';
@@ -84,7 +83,7 @@ export async function build(pkgs: string[]) {
 }
 
 export async function buildPackages(
-  packages: Package[],
+  packages: any[],
   targetDir: string,
   doBuildPackage: (cwd: string, userConfig: UserConfig, sourcemap: boolean, log?: PkgLog) => Promise<any>,
 ) {
@@ -95,7 +94,7 @@ export async function buildPackages(
 }
 
 export async function buildPackage(
-  pkg: Package,
+  pkg: any,
   targetDir: string,
   doBuildPackage: (cwd: string, userConfig: UserConfig, sourcemap: boolean, log?: PkgLog) => Promise<any>,
 ) {
@@ -155,7 +154,7 @@ export async function buildPackage(
 }
 
 function runScript(args: string[], cwd: string, envs: Record<string, string> = {}) {
-  return execa('yarn', args, {
+  return execa('pnpm', args, {
     cwd,
     stdio: 'inherit',
     env: {

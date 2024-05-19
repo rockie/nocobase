@@ -1,14 +1,15 @@
 {
   "name": "@nocobase/evaluators",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "license": "AGPL-3.0",
   "dependencies": {
     "@formulajs/formulajs": "4.2.0",
-    "@nocobase/utils": "1.0.0-alpha.13",
-    "mathjs": "^10.6.0"
+    "@nocobase/utils": "workspace:*",
+    "mathjs": "^10.6.0",
+    "lodash": "4.17.21"
   },
   "repository": {
     "type": "git",

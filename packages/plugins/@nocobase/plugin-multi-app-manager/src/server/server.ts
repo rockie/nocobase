@@ -316,7 +316,7 @@ export class PluginMultiAppManagerServer extends Plugin {
       await this.subAppUpgradeHandler(app);
     });
 
-    this.app.resourcer.registerActionHandlers({
+    this.app.resourceManager.registerActionHandlers({
       'applications:listPinned': async (ctx, next) => {
         const items = await this.db.getRepository('applications').find({
           filter: {
@@ -334,7 +334,7 @@ export class PluginMultiAppManagerServer extends Plugin {
       actions: ['applications:*'],
     });
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       await next();
       const { actionName, resourceName, params } = ctx.action;
       if (actionName === 'list' && resourceName === 'applications') {

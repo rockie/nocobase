@@ -19,7 +19,7 @@ export class PluginAPIDocServer extends Plugin {
   }
   async beforeLoad() {}
   async load() {
-    this.app.resourcer.define({
+    this.app.resourceManager.define({
       name: 'swagger',
       type: 'single',
       actions: {

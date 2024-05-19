@@ -34,7 +34,7 @@ describe('actions', () => {
   describe('send', () => {
     let params = null;
     beforeAll(async () => {
-      app.resourcer.getResource('customRequests').addAction('test', (ctx: Context) => {
+      app.resourceManager.getResource('customRequests').addAction('test', (ctx: Context) => {
         params = ctx.action.params.values;
         return ctx.action.params.values;
       });

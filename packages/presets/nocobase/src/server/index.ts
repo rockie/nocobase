@@ -9,6 +9,9 @@
 
 import { Plugin, PluginManager } from '@nocobase/server';
 import _ from 'lodash';
+import path from 'node:path';
+
+const PresetNodeModulesPath = path.resolve(__dirname, '../../node_modules');
 
 export class PresetNocoBase extends Plugin {
   builtInPlugins = [
@@ -87,14 +90,10 @@ export class PresetNocoBase extends Plugin {
   }
 
   async getPackageJson(name) {
-    let packageName = name;
-    try {
-      packageName = await PluginManager.getPackageName(name);
-    } catch (error) {
-      packageName = name;
-    }
-    const packageJson = await PluginManager.getPackageJson(packageName);
-    return packageJson;
+    //const { packageName } = await PluginManager.parseName(name);
+    const [packageName, packagePath] = await PluginManager.getPackageNameAndPath(name, PresetNodeModulesPath);
+    const packageJson = await PluginManager.getPackageJsonByPath(packagePath);
+    return { ...packageJson, name: packageName, packagePath };
   }
 
   async allPlugins() {
@@ -105,6 +104,7 @@ export class PresetNocoBase extends Plugin {
           return {
             name,
             packageName: packageJson.name,
+            packagePath: packageJson.packagePath,
             enabled: true,
             builtIn: true,
             version: packageJson.version,
@@ -116,7 +116,12 @@ export class PresetNocoBase extends Plugin {
         this.getLocalPlugins().map(async (plugin) => {
           const name = plugin[0];
           const packageJson = await this.getPackageJson(name);
-          return { name, packageName: packageJson.name, version: packageJson.version };
+          return {
+            name,
+            packageName: packageJson.name,
+            packagePath: packageJson.packagePath,
+            version: packageJson.version,
+          };
         }),
       ),
     );
@@ -131,6 +136,7 @@ export class PresetNocoBase extends Plugin {
         return {
           name,
           packageName: packageJson.name,
+          packagePath: packageJson.packagePath,
           enabled: true,
           builtIn: true,
           version: packageJson.version,
@@ -146,7 +152,7 @@ export class PresetNocoBase extends Plugin {
       }
       const name = plugin[0];
       const packageJson = await this.getPackageJson(name);
-      plugins.push({ name, packageName: packageJson.name, version: packageJson.version });
+      plugins.push({ name, packageName: packageJson.name, packagePath: packageJson.packagePath, version: packageJson.version });
     }
     return plugins;
   }

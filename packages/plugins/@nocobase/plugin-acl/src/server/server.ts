@@ -140,12 +140,12 @@ export class PluginACLServer extends Plugin {
       }
     });
 
-    this.app.resourcer.define(availableActionResource);
-    this.app.resourcer.define(roleCollectionsResource);
+    this.app.resourceManager.define(availableActionResource);
+    this.app.resourceManager.define(roleCollectionsResource);
 
-    this.app.resourcer.registerActionHandler('roles:check', checkAction);
+    this.app.resourceManager.registerActionHandler('roles:check', checkAction);
 
-    this.app.resourcer.registerActionHandler(`users:setDefaultRole`, setDefaultRole);
+    this.app.resourceManager.registerActionHandler(`users:setDefaultRole`, setDefaultRole);
 
     this.db.on('users.afterCreateWithAssociations', async (model, options) => {
       const { transaction } = options;
@@ -410,7 +410,7 @@ export class PluginACLServer extends Plugin {
     this.app.on('beforeSignOut', ({ userId }) => {
       this.app.cache.del(`roles:${userId}`);
     });
-    this.app.resourcer.use(setCurrentRole, { tag: 'setCurrentRole', before: 'acl', after: 'auth' });
+    this.app.resourceManager.use(setCurrentRole, { tag: 'setCurrentRole', before: 'acl', after: 'auth' });
 
     this.app.acl.allow('users', 'setDefaultRole', 'loggedIn');
     this.app.acl.allow('roles', 'check', 'loggedIn');
@@ -451,7 +451,7 @@ export class PluginACLServer extends Plugin {
       };
     });
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       const { actionName, resourceName, params } = ctx.action;
       const { showAnonymous } = params || {};
       if (actionName === 'list' && resourceName === 'roles') {

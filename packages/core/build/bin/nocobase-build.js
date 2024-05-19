@@ -22,8 +22,10 @@ if (args.v || args.version) {
 }
 
 // Notify update when process exits
+/*
 const updater = require('update-notifier');
 const pkg = require('../package.json');
 updater({ pkg }).notify({ defer: true });
+*/
 
 build(args._);

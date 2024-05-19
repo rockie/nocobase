@@ -1,0 +1,87 @@
+kind: pipeline
+type: docker
+name: build nocobase and deploy to ci
+
+concurrency:
+  limit: 1
+
+workspace:
+  path: /drone/nocobase
+
+steps:
+- name: restore cache
+  image: drillster/drone-volume-cache
+  volumes:
+  - name: cache
+    path: /cache
+  settings:
+    restore: true
+    mount:
+      - ./node_modules
+
+- name: build-and-pack
+  image: node:lts
+  environment:
+    DB_PASSWORD: 
+      from_secret: db_passwd
+    INIT_ROOT_PASSWORD:
+      from_secret: admin_passwd
+  commands:  
+  - pwd
+  - node -v
+  - corepack enable
+  - corepack prepare yarn@1.22.19 --activate
+  - yarn -v
+  - yarn install --frozen-lockfile
+  - mv .env.prod .env
+  - echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+  - echo "INIT_ROOT_PASSWORD=$INIT_ROOT_PASSWORD" >> .env  
+  - yarn nocobase install   
+  - yarn build
+  - yarn install --frozen-lockfile --production
+  - tar -czvf ./admin-base.tar.gz -C --directory=./ .
+
+- name: rebuild cache
+  image: drillster/drone-volume-cache
+  volumes:
+  - name: cache
+    path: /cache
+  settings:
+    rebuild: true
+    mount:
+      - ./node_modules
+
+- name: deploy
+  image: kroniak/ssh-client
+  environment:
+      SSH_HOST: 
+          from_secret: ci_host
+      SSH_USER: 
+          from_secret: ci_ssh_user
+      SSH_KEY:
+          from_secret: ci_ssh_key
+  commands:      
+      - echo "Start remote deploying ..."
+      - ls -al *.tar.gz
+      - mkdir -p ./_tmp
+      - echo "$SSH_KEY" > ./_tmp/key            
+      - chmod 400 ./_tmp/key
+      - scp -oStrictHostKeyChecking=no -i ./_tmp/key -r ./admin-base.tar.gz $SSH_USER@$SSH_HOST:~/artifacts/admin-base.tar.gz
+      - scp -oStrictHostKeyChecking=no -i ./_tmp/key ./_tmp/env $SSH_USER@$SSH_HOST:~/_deploy/env
+      - scp -oStrictHostKeyChecking=no -i ./_tmp/key ./web/dist/*.tar.gz $SSH_USER@$SSH_HOST:"~/_deploy"
+      - ssh -oStrictHostKeyChecking=no -i ./_tmp/key $SSH_USER@$SSH_HOST "sh ~/_deploy/ci-deploy-web.sh && rm -rf ~/_deploy"
+      - rm -rf ./_tmp
+      - rm -rf ./web/dist
+      - echo "Remote deploy finished."
+
+trigger:
+  branch:
+    - ci
+  event:
+    - push
+    - pull_request
+
+volumes:
+- name: cache
+  host:
+    path: /tmp/cache

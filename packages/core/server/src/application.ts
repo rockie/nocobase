@@ -66,14 +66,6 @@ export interface ResourceManagerOptions {
   prefix?: string;
 }
 
-/**
- * this interface is deprecated and should not be used.
- * @deprecated
- * use {@link ResourceManagerOptions} instead
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ResourcerOptions extends ResourceManagerOptions {}
-
 export interface AppLoggerOptions {
   request: RequestLoggerOptions;
   system: SystemLoggerOptions;
@@ -86,12 +78,6 @@ export interface AppTelemetryOptions extends TelemetryOptions {
 export interface ApplicationOptions {
   database?: IDatabaseOptions | Database;
   cacheManager?: CacheManagerOptions;
-  /**
-   * this property is deprecated and should not be used.
-   * @deprecated
-   * use {@link ApplicationOptions.resourceManager} instead
-   */
-  resourcer?: ResourceManagerOptions;
   resourceManager?: ResourceManagerOptions;
   bodyParser?: any;
   cors?: any;
@@ -270,15 +256,6 @@ export class Application<StateT = DefaultState, ContextT = DefaultContext> exten
   }
 
   get resourceManager() {
-    return this.mainDataSource.resourceManager;
-  }
-
-  /**
-   * This method is deprecated and should not be used.
-   * Use {@link #resourceManager} instead.
-   * @deprecated
-   */
-  get resourcer() {
     return this.mainDataSource.resourceManager;
   }
 
@@ -747,7 +724,7 @@ export class Application<StateT = DefaultState, ContextT = DefaultContext> exten
 
     if (options.checkInstall && !(await this.isInstalled())) {
       throw new ApplicationNotInstall(
-        `Application ${this.name} is not installed, Please run 'yarn nocobase install' command first`,
+        `Application ${this.name} is not installed, Please run 'pnpm nocobase install' command first`,
       );
     }
 

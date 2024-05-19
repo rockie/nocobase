@@ -7,7 +7,6 @@
  * For more information, please refer to: https://www.nocobase.com/agreement.
  */
 
-import { Package } from '@lerna/package';
 import path from 'path';
 
 export const globExcludeFiles = [
@@ -42,9 +41,9 @@ export const PLUGINS_DIR = ['plugins', 'samples', 'pro-plugins']
   .filter(Boolean)
   .map((name) => path.join(PACKAGES_PATH, name));
 export const PRESETS_DIR = path.join(PACKAGES_PATH, 'presets');
-export const getPluginPackages = (packages: Package[]) =>
+export const getPluginPackages = (packages: any[]) =>
   packages.filter((item) => PLUGINS_DIR.some((pluginDir) => item.location.startsWith(pluginDir)));
-export const getPresetsPackages = (packages: Package[]) =>
+export const getPresetsPackages = (packages: any[]) =>
   packages.filter((item) => item.location.startsWith(PRESETS_DIR));
 export const CORE_APP = path.join(PACKAGES_PATH, 'core/app');
 export const CORE_CLIENT = path.join(PACKAGES_PATH, 'core/client');
@@ -54,7 +53,7 @@ export const CJS_EXCLUDE_PACKAGES = [
   path.join(PACKAGES_PATH, 'core/cli'),
   CORE_CLIENT,
 ];
-export const getCjsPackages = (packages: Package[]) =>
+export const getCjsPackages = (packages: any[]) =>
   packages
     .filter((item) => !PLUGINS_DIR.some((dir) => item.location.startsWith(dir)))
     .filter((item) => !item.location.startsWith(PRESETS_DIR))

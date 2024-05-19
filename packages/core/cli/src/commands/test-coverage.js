@@ -29,22 +29,22 @@ const getPackagesDir = (isClient) => {
 };
 
 module.exports = (cli) => {
-  cli.command('test-coverage:server').action(async () => {
+  cli.command('test-coverage:server').action(async (options) => {
     const packageRoots = getPackagesDir(false);
     for (const dir of packageRoots) {
       try {
-        await run('yarn', ['test:server', dir, '--coverage']);
+        await run(cli.opts().packageManager, ['test:server', dir, '--coverage']);
       } catch (e) {
         continue;
       }
     }
   });
 
-  cli.command('test-coverage:client').action(async () => {
+  cli.command('test-coverage:client').action(async (options) => {
     const packageRoots = getPackagesDir(true);
     for (const dir of packageRoots) {
       try {
-        await run('yarn', ['test:client', dir, '--coverage']);
+        await run(cli.opts().packageManager, ['test:client', dir, '--coverage']);
       } catch (e) {
         continue;
       }

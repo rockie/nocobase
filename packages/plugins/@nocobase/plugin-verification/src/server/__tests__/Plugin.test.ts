@@ -125,7 +125,7 @@ describe('verification > Plugin', () => {
     });
 
     it('will intercept', async () => {
-      app.resourcer.registerActionHandler('authors:create', plugin.intercept);
+      app.resourceManager.registerActionHandler('authors:create', plugin.intercept);
 
       const res1 = await agent.resource('authors').create({
         values: { phone: '1' },

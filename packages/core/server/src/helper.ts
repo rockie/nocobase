@@ -134,7 +134,7 @@ export const enablePerfHooks = (app: Application) => {
     return app.perfHistograms.get(name);
   };
 
-  app.resourcer.define({
+  app.resourceManager.define({
     name: 'perf',
     actions: {
       view: async (ctx, next) => {

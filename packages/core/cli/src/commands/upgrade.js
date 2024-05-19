@@ -45,8 +45,9 @@ module.exports = (cli) => {
       if (existsSync(appDevDir)) {
         rmSync(appDevDir, { recursive: true, force: true });
       }
-      await run('yarn', ['add', '@nocobase/cli', '@nocobase/devtools', '-W']);
-      await run('yarn', ['install']);
+      const pm = cli.opts().packageManager;
+      await run(pm, ['add', '@nocobase/cli', '@nocobase/devtools', pm === 'pnpm' ? '-w' : '-W']);
+      await run(pm, ['install']);
       await runAppCommand('upgrade');
     });
 };

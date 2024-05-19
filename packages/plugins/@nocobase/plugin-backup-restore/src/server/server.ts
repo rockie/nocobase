@@ -19,6 +19,6 @@ export default class PluginBackupRestoreServer extends Plugin {
   }
 
   async load() {
-    this.app.resourcer.define(backupFilesResourcer);
+    this.app.resourceManager.define(backupFilesResourcer);
   }
 }

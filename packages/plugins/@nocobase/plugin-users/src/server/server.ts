@@ -125,7 +125,7 @@ export default class PluginUsersServer extends Plugin {
     });
 
     for (const [key, action] of Object.entries(actions)) {
-      this.app.resourcer.registerActionHandler(`users:${key}`, action);
+      this.app.resourceManager.registerActionHandler(`users:${key}`, action);
     }
 
     this.app.acl.addFixedParams('users', 'destroy', () => {
@@ -163,7 +163,7 @@ export default class PluginUsersServer extends Plugin {
       },
     });
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       await next();
       const { associatedName, resourceName, actionName, values } = ctx.action.params;
       const cache = ctx.app.cache as Cache;

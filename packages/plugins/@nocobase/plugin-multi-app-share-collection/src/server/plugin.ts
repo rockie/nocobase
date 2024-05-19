@@ -45,7 +45,7 @@ class SubAppPlugin extends Plugin {
       }
     });
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       const { actionName, resourceName } = ctx.action;
       if (actionName === 'list' && resourceName === 'applicationPlugins') {
         ctx.action.mergeParams({
@@ -243,7 +243,7 @@ export class MultiAppShareCollectionPlugin extends Plugin {
       return;
     }
 
-    this.app.resourcer.registerActionHandlers({
+    this.app.resourceManager.registerActionHandlers({
       'applications:shareCollections': async (ctx, next) => {
         const { filterByTk, values } = ctx.action.params;
         ctx.body = {

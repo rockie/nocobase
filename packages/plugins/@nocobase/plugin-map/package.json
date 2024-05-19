@@ -2,7 +2,7 @@
   "name": "@nocobase/plugin-map",
   "displayName": "Block: Map",
   "displayName.zh-CN": "区块：地图",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "Map block, support Gaode map and Google map, you can also extend more map types.",
   "description.zh-CN": "地图区块，支持高德地图和 Google 地图，你也可以扩展更多地图类型。",
   "license": "AGPL-3.0",
@@ -13,7 +13,7 @@
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@amap/amap-jsapi-types": "^0.0.10",
     "@ant-design/icons": "5.x",
-    "@formily/antd-v5": "1.x",
+    "@formily/antd-v5": "*",
     "@formily/core": "2.x",
     "@formily/react": "2.x",
     "@formily/shared": "2.x",
@@ -29,12 +29,12 @@
     "react-router-dom": "^6.11.2"
   },
   "peerDependencies": {
-    "@nocobase/actions": "1.x",
-    "@nocobase/client": "1.x",
-    "@nocobase/database": "1.x",
-    "@nocobase/server": "1.x",
-    "@nocobase/test": "1.x",
-    "@nocobase/utils": "1.x"
+    "@nocobase/actions": "workspace:*",
+    "@nocobase/client": "workspace:*",
+    "@nocobase/database": "workspace:*",
+    "@nocobase/server": "workspace:*",
+    "@nocobase/test": "workspace:*",
+    "@nocobase/utils": "workspace:*"
   },
   "gitHead": "d0b4efe4be55f8c79a98a331d99d9f8cf99021a1",
   "keywords": [

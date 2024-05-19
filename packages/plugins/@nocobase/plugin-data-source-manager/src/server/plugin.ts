@@ -207,7 +207,7 @@ export class PluginDataSourceManagerServer extends Plugin {
       return item;
     };
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       if (!ctx.action) {
         await next();
         return;
@@ -310,13 +310,13 @@ export class PluginDataSourceManagerServer extends Plugin {
       },
     });
 
-    this.app.resourcer.define(remoteCollectionsResourcer);
-    this.app.resourcer.define(remoteFieldsResourcer);
-    this.app.resourcer.define(rolesRemoteCollectionsResourcer);
-    this.app.resourcer.define(databaseConnectionsRolesResourcer);
-    this.app.resourcer.define(rolesConnectionResourcesResourcer);
+    this.app.resourceManager.define(remoteCollectionsResourcer);
+    this.app.resourceManager.define(remoteFieldsResourcer);
+    this.app.resourceManager.define(rolesRemoteCollectionsResourcer);
+    this.app.resourceManager.define(databaseConnectionsRolesResourcer);
+    this.app.resourceManager.define(rolesConnectionResourcesResourcer);
 
-    this.app.resourcer.define({
+    this.app.resourceManager.define({
       name: 'dataSources',
     });
 
@@ -441,7 +441,7 @@ export class PluginDataSourceManagerServer extends Plugin {
     });
 
     // add global roles check
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       const action = ctx.action;
       await next();
       const { resourceName, actionName } = action.params;

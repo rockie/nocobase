@@ -16,7 +16,6 @@ coverage
 /uploads
 .env.test
 docs-dist/
-.npmrc
 dist/
 docker/**/storage
 cache/diskstore-*
@@ -43,3 +42,4 @@ ncc-cache/
 yarn--**
 v8-compile-cache-**
 vitest.config.mts.timestamp-*
+pnpm-lock.yaml

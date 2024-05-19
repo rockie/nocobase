@@ -184,7 +184,7 @@ module.exports = (cli) => {
       }
       if (options.build) {
         process.env.APP_ENV = 'production';
-        await run('yarn', ['build']);
+        await run(e2e.opts().packageManager, ['build']);
       }
       if (options.url) {
         process.env.APP_BASE_URL = options.url.replace('localhost', '127.0.0.1');
@@ -222,7 +222,7 @@ module.exports = (cli) => {
     .action(async (options) => {
       process.env.__E2E__ = true;
       if (options.build) {
-        await run('yarn', ['build']);
+        await run(e2e.opts().packageManager, ['build']);
       }
       if (options.production) {
         process.env.APP_ENV = 'production';
@@ -257,7 +257,7 @@ module.exports = (cli) => {
       process.env.__E2E__ = true;
       if (options.build) {
         process.env.APP_ENV = 'production';
-        await run('yarn', ['build']);
+        await run(e2e.opts().packageManager, ['build']);
       }
       await pTest({ ...options, concurrency: 1 * options.concurrency });
     });

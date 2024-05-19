@@ -269,7 +269,7 @@ export class PluginDataSourceMainServer extends Plugin {
 
     this.app.on('beforeStart', loadCollections);
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       const { resourceName, actionName } = ctx.action;
       if (resourceName === 'collections.fields' && actionName === 'update') {
         const { updateAssociationValues = [] } = ctx.action.params;
@@ -314,7 +314,7 @@ export class PluginDataSourceMainServer extends Plugin {
       },
     );
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       if (ctx.action.resourceName === 'collections.fields' && ['create', 'update'].includes(ctx.action.actionName)) {
         ctx.action.mergeParams({
           updateAssociationValues: ['reverseField'],
@@ -356,7 +356,7 @@ export class PluginDataSourceMainServer extends Plugin {
       }
     };
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       await next();
 
       // handle collections:list

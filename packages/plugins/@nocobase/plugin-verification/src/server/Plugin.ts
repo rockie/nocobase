@@ -142,7 +142,7 @@ export default class PluginVerficationServer extends Plugin {
     initActions(this);
 
     // add middleware to action
-    app.resourcer.use(async (context, next) => {
+    app.resourceManager.use(async (context, next) => {
       const { resourceName, actionName, values } = context.action.params;
       const key = `${resourceName}:${actionName}`;
       const interceptor = this.interceptors.get(key);

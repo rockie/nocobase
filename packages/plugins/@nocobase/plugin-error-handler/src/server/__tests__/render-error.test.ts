@@ -167,7 +167,7 @@ describe('create with exception', () => {
 
     await userCollection.sync();
 
-    app.resourcer.define({
+    app.resourceManager.define({
       name: 'test',
       actions: {
         async test(ctx) {

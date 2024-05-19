@@ -29,7 +29,7 @@ export class PluginFieldChinaRegionServer extends Plugin {
 
     this.app.acl.allow('chinaRegions', 'list', 'loggedIn');
 
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       const { resourceName, actionName } = ctx.action.params;
 
       if (resourceName == 'chinaRegions' && actionName !== 'list') {

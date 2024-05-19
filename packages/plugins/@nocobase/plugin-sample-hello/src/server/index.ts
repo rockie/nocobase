@@ -30,7 +30,7 @@ export class HelloPlugin extends Plugin {
   }
 
   async disable() {
-    // this.app.resourcer.removeResource('testHello');
+    // this.app.resourceManager.removeResource('testHello');
   }
 
   async install(options: InstallOptions) {

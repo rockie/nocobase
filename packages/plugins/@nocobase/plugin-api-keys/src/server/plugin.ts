@@ -14,7 +14,7 @@ export class PluginAPIKeysServer extends Plugin {
   resourceName = 'apiKeys';
 
   async beforeLoad() {
-    this.app.resourcer.define({
+    this.app.resourceManager.define({
       name: this.resourceName,
       actions: {
         create,
@@ -30,7 +30,7 @@ export class PluginAPIKeysServer extends Plugin {
   }
 
   async load() {
-    this.app.resourcer.use(
+    this.app.resourceManager.use(
       async (ctx, next) => {
         const { resourceName, actionName } = ctx.action;
         if (resourceName === this.resourceName && ['list', 'destroy'].includes(actionName)) {

@@ -38,10 +38,11 @@ async function getProjectVersion() {
 
 class PluginGenerator extends Generator {
   constructor(options) {
-    const { log, context = {}, ...opts } = options;
+    const { log, context = {}, packageManager, ...opts } = options;
     super(opts);
     this.context = context;
     this.log = log || console.log;
+    this.packageManager = packageManager;
   }
 
   async getContext() {
@@ -72,7 +73,7 @@ class PluginGenerator extends Generator {
     });
     this.log('');
     genTsConfigPaths();
-    execa.sync('yarn', ['postinstall', '--skip-umi'], { shell: true, stdio: 'inherit' });
+    execa.sync(this.packageManager, ['postinstall', '--skip-umi'], { shell: true, stdio: 'inherit' });
     this.log(`The plugin folder is in ${chalk.green(`packages/plugins/${name}`)}`);
   }
 }

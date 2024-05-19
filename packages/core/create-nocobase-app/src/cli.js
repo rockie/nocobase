@@ -28,6 +28,8 @@ cli
       console.log(`⚠️  ${chalk.yellow('quickstart option is deprecated')}`);
     }
 
+    console.log('feifjaioejiawofjefijeiofjowj');
+
     const generator = new AppGenerator({
       cwd: resolve(process.cwd(), name),
       args: options,

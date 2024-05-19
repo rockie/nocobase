@@ -48,8 +48,9 @@ export function getDepPkgPath(dep: string, cwd: string) {
   try {
     return require.resolve(`${dep}/package.json`, { paths: [cwd] });
   } catch {
-    const mainFile = require.resolve(`${dep}`, { paths: cwd ? [cwd] : undefined });
-    const packageDir = mainFile.slice(0, mainFile.indexOf(dep.replace('/', path.sep)) + dep.length);
+    const mainFile = require.resolve(`${dep}`, { paths: cwd ? [cwd] : undefined });    
+    const packageDir = mainFile.slice(0, mainFile.lastIndexOf(dep.replace('/', path.sep)) + dep.length);
+    
     return path.join(packageDir, 'package.json');
   }
 }

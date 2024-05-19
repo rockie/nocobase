@@ -15,7 +15,7 @@ export class PluginDisablePmAddServer extends Plugin {
   }
 
   async load() {
-    this.app.resourcer.use(async (ctx, next) => {
+    this.app.resourceManager.use(async (ctx, next) => {
       const { resourceName, actionName } = ctx.action;
       if (resourceName === 'pm' && actionName === 'add') {
         ctx.throw(403, 'The current environment does not allow adding plugins online');
@@ -25,7 +25,7 @@ export class PluginDisablePmAddServer extends Plugin {
   }
 
   async disable() {
-    // this.app.resourcer.removeResource('testHello');
+    // this.app.resourceManager.removeResource('testHello');
   }
 
   async install(options: InstallOptions) {
