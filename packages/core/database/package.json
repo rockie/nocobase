@@ -6,6 +6,7 @@
   "types": "./lib/index.d.ts",
   "license": "AGPL-3.0",
   "dependencies": {
+    "node-sql-parser": "^4.18.0",
     "@nocobase/logger": "workspace:*",
     "@nocobase/utils": "workspace:*",
     "async-mutex": "^0.3.2",
