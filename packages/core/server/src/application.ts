@@ -527,9 +527,11 @@ export class Application<StateT = DefaultState, ContextT = DefaultContext> exten
 
     this._cacheManager = await createCacheManager(this, this.options.cacheManager);
 
+    this.log.debug('init plugins');
     this.setMaintainingMessage('init plugins');
     await this.pm.initPlugins();
 
+    this.log.debug('loading app...');
     this.setMaintainingMessage('start load');
     this.setMaintainingMessage('emit beforeLoad');
 
@@ -674,7 +676,7 @@ export class Application<StateT = DefaultState, ContextT = DefaultContext> exten
     }
     if (options?.reqId) {
       this.context.reqId = options.reqId;
-      this._logger = this._logger.child({ reqId: this.context.reqId });
+      this._logger = this._logger.child({ reqId: this.context.reqId }) as any;
     }
     this._maintainingStatusBeforeCommand = this._maintainingCommandStatus;
 
@@ -738,6 +740,7 @@ export class Application<StateT = DefaultState, ContextT = DefaultContext> exten
       );
     }
 
+    this.log.debug(`starting app...`);
     this.setMaintainingMessage('starting app...');
 
     if (this.db.closed()) {
@@ -1042,7 +1045,9 @@ export class Application<StateT = DefaultState, ContextT = DefaultContext> exten
       reqId: this.context.reqId,
       app: this.name,
       module: 'application',
-    });
+      // Due to the use of custom log levels,
+      // we have to use any type here until Winston updates the type definitions.
+    }) as any;
     this.requestLogger = createLogger({
       dirname: getLoggerFilePath(this.name),
       filename: 'request',

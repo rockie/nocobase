@@ -1,6 +1,6 @@
 {
   "name": "@nocobase/telemetry",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "description": "nocobase telemetry library",
   "license": "AGPL-3.0",
   "main": "./lib/index.js",
