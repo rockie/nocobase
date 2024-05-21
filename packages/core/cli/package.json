@@ -1,6 +1,6 @@
 {
   "name": "@nocobase/cli",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "description": "",
   "license": "AGPL-3.0",
   "main": "./src/index.js",
